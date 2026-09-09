@@ -17,6 +17,17 @@ const Component = (props: {
     return res;
   };
 
+  const getCopyData = async () => {
+    const user = await getUserInfo();
+    const findCount = (type: string) => user.interactions?.find(item => item.type === type)?.count;
+    return {
+      ...user,
+      follow_count: findCount('follows'),
+      fans_count: findCount('fans'),
+      interaction_count: findCount('interaction'),
+    };
+  };
+
   const handlerOpenExportDialog = async () => {
     const user = await getUserInfo();
     sendMessage('openTaskDialog', {
@@ -41,11 +52,23 @@ const Component = (props: {
     {
       label: "个人简介",
       value: "basic_info.desc",
+    },
+    {
+      label: "关注人数",
+      value: "follow_count",
+    },
+    {
+      label: "粉丝数",
+      value: "fans_count",
+    },
+    {
+      label: "获赞与收藏数",
+      value: "interaction_count",
     }];
 
   return (<>
     <Logo />
-    <CopyButton size="sm" options={copyOptions} getData={getUserInfo}>复制博主信息</CopyButton>
+    <CopyButton size="sm" options={copyOptions} getData={getCopyData}>复制博主信息</CopyButton>
     <Button size="sm" onClick={handlerOpenExportDialog}>导出笔记数据</Button>
   </>);
 };
